@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-metrics-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-metrics-app
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: example-metrics-app
+    spec:
+      containers:
+        - name: example-metrics-app
+          image: zifter/example-metrics-app
+          imagePullPolicy: Always
+          ports:
+            - name: metrics
+              containerPort: 8088
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: example-metrics-app
+  labels:
+    app: example-metrics-app
+spec:
+  selector:
+    app: example-metrics-app
+  ports:
+  - name: metrics
+    port: 8088
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: example-metrics-app
+  labels:
+    app: example-metrics-app
+spec:
+  selector:
+    matchLabels:
+      app: example-metrics-app
+  endpoints:
+  - port: metrics
+    path: /metrics
+
