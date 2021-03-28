@@ -3,16 +3,10 @@ kind: Deployment
 metadata:
   name: example-metrics-app
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: example-metrics-app
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-  minReadySeconds: 5
   template:
     metadata:
       labels:
@@ -20,11 +14,18 @@ spec:
     spec:
       containers:
         - name: example-metrics-app
-          image: zifter/example-metrics-app
+          image: {{ .Values.example.registry }}/{{ .Values.example.image }}
           imagePullPolicy: Always
+          env:
+            - name: FLASK_RUN_PORT
+              value: {{ .Values.example.flask_port | quote }}
+            - name: BASE_URL
+              value: {{ .Values.example.base_url  | quote }}
           ports:
             - name: metrics
-              containerPort: 8088
+              containerPort: {{ .Values.example.metrics_port }}
+            - name: http
+              containerPort: {{ .Values.example.flask_port }}
 ---
 kind: Service
 apiVersion: v1
@@ -37,7 +38,9 @@ spec:
     app: example-metrics-app
   ports:
   - name: metrics
-    port: 8088
+    port: {{ .Values.example.metrics_port }}
+  - name: http
+    port: {{ .Values.example.flask_port }}
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -51,5 +54,5 @@ spec:
       app: example-metrics-app
   endpoints:
   - port: metrics
-    path: /metrics
+    path: /
 
