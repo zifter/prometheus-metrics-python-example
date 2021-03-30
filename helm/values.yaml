@@ -11,3 +11,6 @@ grafana_dashboard:
   autodiscover_label: "custom-dashboard"
   namespace: "monitoring"
   target_directory: "" # /var/lib/grafana/dashboards/example
+
+prometheus_rules:
+  namespace: "monitoring"

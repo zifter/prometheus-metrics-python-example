@@ -6,7 +6,7 @@ import os
 import logging
 
 import requests
-from prometheus_client import start_http_server, Counter, Gauge, Histogram, Summary, MetricsHandler, REGISTRY
+from prometheus_client import start_http_server, Counter, Gauge, Histogram, Summary
 from flask import Flask, request, render_template
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
@@ -27,6 +27,8 @@ request_latency_histogram = Histogram('example_requests_latency_histogram_second
 request_latency_summary = Summary('example_requests_latency_summary_seconds', 'Summary', ('handler',))
 
 bitcoin_gauge.set_function(lambda: requests.get('https://blockchain.info/ticker').json()['USD']['last'])
+for _env in ENV_LIST:
+    danger_gauge.labels(env=_env).set(0)
 
 
 @app.context_processor
@@ -59,6 +61,10 @@ def latency():
 def danger():
     request_count.labels(method='get', handler='/danger').inc()
 
+    val = random.gauss(0.5, 0.2)
+    request_latency_histogram.labels(handler='/danger').observe(val)
+    request_latency_summary.labels(handler='/danger').observe(val)
+
     env = request.args.get('env', ENV_LIST[0])
     assert env in ENV_LIST, f'{env} is not in {ENV_LIST}'
 
@@ -66,10 +72,6 @@ def danger():
     assert 0 <= val <= 100, f'danger value {val} must be in range [0, 100]'
 
     danger_gauge.labels(env=env).set(val)
-
-    val = random.gauss(0.5, 0.2)
-    request_latency_histogram.labels(handler='/danger').observe(val)
-    request_latency_summary.labels(handler='/danger').observe(val)
 
     return render_template('page.html', hostname=HOSTNAME, value=f'{env} has danger {val}')
 
