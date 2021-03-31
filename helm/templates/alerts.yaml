@@ -16,7 +16,7 @@ spec:
             message: >-
                {{`{{`}}$labels.env{{`}}`}} danger level is more than 80 points. Found by {{`{{`}}$labels.job{{`}}`}}
           expr: >-
-            max(example_danger) by (job, env) >= 80
+            max(example_danger) by (job, env) > 80
           for: 1m
           labels:
             severity: critical
