@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: example-metrics-app
+  labels:
+    app: example-metrics-app
+spec:
+  selector:
+    app: example-metrics-app
+  ports:
+  - name: metrics
+    port: {{ .Values.example.metrics_port }}
+  - name: http
+    port: {{ .Values.example.flask_port }}

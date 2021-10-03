@@ -2,7 +2,6 @@ set -e
 REGISTRY=${1}
 VERSION=${2:-"local"}
 
-
 echo $VERSION
 
 TAG=${REGISTRY}/example-metrics-app:${VERSION}

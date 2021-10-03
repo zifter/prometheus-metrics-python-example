@@ -5,8 +5,8 @@ WORKDIR /service
 RUN addgroup app_user && adduser --ingroup app_user app_user && chown -R app_user:app_user /service
 
 COPY --chown=app_user requirements.txt /service/requirements.txt
-COPY --chown=app_user app.py /service/app.py
-COPY --chown=app_user templates /service/templates
+COPY --chown=app_user src/app.py /service/app.py
+COPY --chown=app_user src/templates /service/templates
 
 RUN pip3 install -r requirements.txt --no-cache-dir
 

@@ -1,0 +1,29 @@
+#{{- if .Values.monitoring.provider }}
+#apiVersion: v1
+#kind: ConfigMap
+#metadata:
+#  name: {{ .Release.Name }}-grafana-datasource
+#  labels:
+#    grafana_datasource: "1"
+#    app: prometheus-operator-grafana
+#data:
+#  {{ .Release.Name }}-example-providers.yaml: |-
+#    apiVersion: 1
+#    providers:
+#      - name: "General"
+#        orgId: 1
+#        type: file
+#        disableDeletion: false
+#        editable: true
+#        options:
+#          path: /tmp/dashboards/general
+#          foldersFromFilesStructure: true
+#      - name: "Main"
+#        orgId: 1
+#        type: file
+#        disableDeletion: false
+#        editable: true
+#        options:
+#          path: /tmp/dashboards/shared
+#          foldersFromFilesStructure: true
+#{{- end }}

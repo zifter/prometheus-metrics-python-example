@@ -77,7 +77,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DataSource}",
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {},

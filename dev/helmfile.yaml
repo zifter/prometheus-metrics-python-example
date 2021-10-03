@@ -1,0 +1,35 @@
+repositories:
+- name: ingress-nginx
+  url: https://kubernetes.github.io/ingress-nginx
+- name: prometheus-community
+  url: https://prometheus-community.github.io/helm-charts
+
+helmDefaults:
+  wait: true
+  timeout: 300
+
+releases:
+  - name: prometheus
+    namespace: monitoring
+    chart: prometheus-community/kube-prometheus-stack
+    version: 18.0.1
+    values:
+      - releases/values-prometheus-stack.yaml
+
+  - name: ingress-nginx
+    namespace: kube-system
+    chart: ingress-nginx/ingress-nginx
+    version: 3.36.0
+    values:
+      - releases/values-ingress-nginx.yaml
+    needs:
+      - prometheus
+
+  - name: application-example
+    namespace: monitoring
+    chart: ../charts/example-metrics
+    values:
+      - releases/values-example.yaml
+    needs:
+      - prometheus
+      - ingress-nginx

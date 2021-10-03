@@ -1,4 +1,4 @@
 apiVersion: v1
-name: example-metrics-template
+name: example-metrics
 version: 0.1.0
 description: "Provide basic example of metrics types"

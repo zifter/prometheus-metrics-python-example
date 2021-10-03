@@ -1,7 +1,7 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: example-metrics-app-nginx
+  name: {{ .Release.Name }}-nginx
   labels:
     app: example-metrics-app
   annotations:
@@ -15,6 +15,9 @@ spec:
     http:
       paths:
       - path: {{ .Values.example.base_url }}(/|$)(.*)
+        pathType: Prefix
         backend:
-          serviceName: example-metrics-app
-          servicePort: http
+          service:
+            name: example-metrics-app
+            port:
+              name: http

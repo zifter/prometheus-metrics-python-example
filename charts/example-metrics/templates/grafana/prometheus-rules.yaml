@@ -1,22 +1,22 @@
 kind: PrometheusRule
 apiVersion: monitoring.coreos.com/v1
 metadata:
+  name: {{ .Release.Name }}-prometheus-rule
   labels:
     app: example-metrics-app
     prometheus: alert-rules
     role: alert-rules
-  name: example-metrics-app-prometheus-rule
-  namespace: {{ .Values.prometheus_rules.namespace }}
 spec:
   groups:
-    - name: env
+    - name: danger-level-env
       rules:
-        - alert: ProdDangerLevelAchieved
+        - alert: EnvDangerLevelAchieved
           annotations:
-            message: >-
+            description: >-
                {{`{{`}}$labels.env{{`}}`}} danger level is more than 80 points. Found by {{`{{`}}$labels.job{{`}}`}}
           expr: >-
             max(example_danger) by (job, env) > 80
           for: 1m
           labels:
             severity: critical
+            custom_label: my_custom

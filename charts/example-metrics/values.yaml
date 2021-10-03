@@ -1,0 +1,13 @@
+example:
+  registry: zifter
+  image: example-metrics-app:latest
+  flask_port: 6000
+  metrics_port: 8080
+  uri: "localhost"
+  base_url: "/example-metrics"
+
+monitoring:
+  dashboards: true
+  datasource: true
+  provider: true
+  rules: true

@@ -1,0 +1,24 @@
+{{- if .Values.monitoring.datasource }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-grafana-datasource
+  labels:
+    grafana_datasource: "1"
+    app: prometheus-operator-grafana
+data:
+  {{ .Release.Name }}-example-datasources.yaml: |-
+    apiVersion: 1
+    datasources:
+      - name: Prometheus-Test
+        type: prometheus
+        url: http://localhost:9090
+        access: proxy
+        isDefault: false
+        basicAuth: false
+        withCredentials: false
+        editable: true
+        jsonData:
+            tlsSkipVerify: true
+        readOnly: false
+{{- end }}
